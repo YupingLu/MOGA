@@ -2,8 +2,9 @@
 # coding: utf-8
 '''
 MOGA data preprocessing
+Reduce to 14.1% of 1124 data 
 Copyright (c) Yuping Lu <yupinglu89@gmail.com>, 2019
-Last Update: 11/24/2019
+Last Update: 12/03/2019
 '''
 
 # load libs
@@ -31,7 +32,8 @@ Y_t = data[:,15:17]
 Y = np.mean(Y_t, axis=1)
 
 # split data into training set and test set
-x_train_o, x_test_o, y_train_o, y_test_o = train_test_split(X, Y, test_size=0.20, random_state=2019)
+x_train_1, x_test_1, y_train_1, y_test_1 = train_test_split(X, Y, test_size=0.141, random_state=2019)
+x_train_o, x_test_o, y_train_o, y_test_o = train_test_split(x_test_1, y_test_1, test_size=0.20, random_state=2019)
 
 # data normalization to [0, 1]
 x_mean = np.mean(x_train_o, axis=0)
@@ -52,4 +54,4 @@ moga = {
 }
 
 # save data
-pickle.dump(moga, open("moga.1124.pkl", "wb" ))
+pickle.dump(moga, open("moga.1203.test2.pkl", "wb" ))
