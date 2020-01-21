@@ -25,7 +25,10 @@ for f in fs:
 df = pd.concat(data, ignore_index=True, sort =False)
 
 # get X and Y
-data = df.to_numpy()
+data0 = df.to_numpy()
+data1 = data0[data0[:,-3] < 0.1]
+data = data1[data1[:,-3] > -1.1]
+
 X = data[:,20:31]
 Y = abs(data[:,-3])
 Y = Y.astype(int)
@@ -50,4 +53,4 @@ moga = {
 }
 
 # save data
-pickle.dump(moga, open("moga.label.pkl", "wb" ))
+pickle.dump(moga, open("moga.label.0121.pkl", "wb" ))
