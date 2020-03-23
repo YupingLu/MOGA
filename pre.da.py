@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 '''
-MOGA data preprocessing, extract label of each input
+MOGA data preprocessing
 Copyright (c) Yuping Lu <yupinglu89@gmail.com>, 2019
 Last Update: 11/24/2019
 '''
@@ -25,16 +25,13 @@ for f in fs:
 df = pd.concat(data, ignore_index=True, sort =False)
 
 # get X and Y
-data0 = df.to_numpy()
-data1 = data0[data0[:,-3] < 0.1]
-data = data1[data1[:,-3] > -1.1]
-
-X = data[:,20:31]
-Y = abs(data[:,-3])
-Y = Y.astype(int)
+data = df.to_numpy()
+X = data[:,20:22]
+Y_t = data[:,15:17]
+Y = np.mean(Y_t, axis=1)
 
 # split data into training set and test set
-x_train_o, x_test_o, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=2019)
+x_train_o, x_test_o, y_train_o, y_test_o = train_test_split(X, Y, test_size=0.20, random_state=2019)
 
 # data normalization to [0, 1]
 x_mean = np.mean(x_train_o, axis=0)
@@ -42,6 +39,8 @@ x_std = np.std(x_train_o, axis=0)
 
 x_train = (x_train_o - x_mean) / x_std
 x_test = (x_test_o - x_mean) / x_std
+y_train = y_train_o
+y_test = y_test_o 
 
 moga = {
     "x_train": x_train,
@@ -53,4 +52,4 @@ moga = {
 }
 
 # save data
-pickle.dump(moga, open("moga.label.0121.pkl", "wb" ))
+pickle.dump(moga, open("moga.0203.pkl", "wb" ))

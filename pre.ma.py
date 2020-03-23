@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 '''
-MOGA data preprocessing
-Copyright (c) Yuping Lu <yupinglu89@gmail.com>, 2019
-Last Update: 11/24/2019
+MOGA data preprocessing for momentum aperture
+Copyright (c) Yuping Lu <yupinglu89@gmail.com>, 2020
+Last Update: 02/11/2020
 '''
 
 # load libs
@@ -26,9 +26,8 @@ df = pd.concat(data, ignore_index=True, sort =False)
 
 # get X and Y
 data = df.to_numpy()
-X = data[:,20:31]
-Y_t = data[:,15:17]
-Y = np.mean(Y_t, axis=1)
+X = data[:,20:22]
+Y = data[:,17]
 
 # split data into training set and test set
 x_train_o, x_test_o, y_train_o, y_test_o = train_test_split(X, Y, test_size=0.20, random_state=2019)
@@ -52,4 +51,4 @@ moga = {
 }
 
 # save data
-pickle.dump(moga, open("moga.1124.pkl", "wb" ))
+pickle.dump(moga, open("ma.0211.pkl", "wb" ))

@@ -16,12 +16,12 @@ import random
 import matplotlib.pyplot as plt
 import pickle
 
-# definition of a simple fc model [11, 32, 64, 2]
+# definition of a simple fc model [2, 32, 64, 2]
 class MOGANet(nn.Module):
     def __init__(self):
         super(MOGANet, self).__init__()
         self.fc = nn.Sequential(
-            nn.Linear(11, 64),
+            nn.Linear(2, 64),
             nn.ReLU(inplace=True),
             nn.Linear(64, 128),
             nn.ReLU(inplace=True),
@@ -49,7 +49,7 @@ def train(model, device, train_loader, optimizer, criterion):
     train_loss = 0
     correct = 0
     acc = 0
-    
+   
     for x, y in train_loader:
         x = x.to(device)
         y = y.to(device)
@@ -109,7 +109,7 @@ torch.manual_seed(2020)
 torch.cuda.manual_seed_all(2020)
 
 # load files
-moga = pickle.load(open("moga.label.pkl", "rb"))
+moga = pickle.load(open("moga.label.0203.pkl", "rb"))
 x_train, x_test = moga["x_train"], moga["x_test"]
 y_train, y_test = moga["y_train"], moga["y_test"]
 
@@ -142,7 +142,7 @@ for t in range(100):
     scheduler.step(test_loss)
         
 # save trained model
-torch.save(model.state_dict(), 'moga-label-01072020.pth')
+torch.save(model.state_dict(), 'moga-label-02032020.pth')
 
 model.eval()
 with torch.no_grad():
