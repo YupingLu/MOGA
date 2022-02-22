@@ -18,16 +18,26 @@ import pickle
 # In[ ]:
 
 
-# definition of a simple fc model [2, 32, 64, 1]
+# definition of a simple fc model [11, 32, 64, 1]
 class MOGANet(nn.Module):
     def __init__(self):
         super(MOGANet, self).__init__()
         self.fc = nn.Sequential(
-            nn.Linear(2, 32),
+            nn.Linear(11, 32),
             nn.ReLU(inplace=True),
             nn.Linear(32, 64),
             nn.ReLU(inplace=True),
-            nn.Linear(64, 1),
+            nn.Linear(64, 128),
+            nn.ReLU(inplace=True),
+            nn.Linear(128, 256),
+            nn.ReLU(inplace=True),
+            nn.Linear(256, 128),
+            nn.ReLU(inplace=True),
+            nn.Linear(128, 64),
+            nn.ReLU(inplace=True),
+            nn.Linear(64, 32),
+            nn.ReLU(inplace=True),
+            nn.Linear(32, 1),
         )
         
     def forward(self, x):
@@ -100,7 +110,7 @@ torch.manual_seed(2020)
 torch.cuda.manual_seed_all(2020)
 
 # load files
-moga = pickle.load(open("rand.da.0317.pkl", "rb"))
+moga = pickle.load(open("ma.1208.pkl", "rb"))
 x_train, x_test = moga["x_train"], moga["x_test"]
 y_train, y_test = moga["y_train"], moga["y_test"]
 x_mean, x_std = moga["x_mean"], moga["x_std"]
@@ -133,7 +143,7 @@ test_loader = DataLoader(dataset=test_data, **params)
 model = MOGANet().to(device)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
-scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.8)
 
 
 # In[ ]:
@@ -153,8 +163,8 @@ for t in range(500):
 
 
 # save trained model
-torch.save(model.state_dict(), 'rand.da.0317.pth')
-#model.load_state_dict(torch.load("moga-0203.pth"))
+torch.save(model.state_dict(), 'ma.1208.pth')
+#model.load_state_dict(torch.load("ma.1208.pth"))
 
 
 # In[ ]:
@@ -183,10 +193,11 @@ plt.figure(figsize=(6,4))
 num_bins = 200
 plt.hist(delta_y, num_bins, facecolor='blue')
 plt.xlabel('Prediction Error')
-plt.xlim(-100,100)
+plt.xlim(-0.0015,0.0015)
 plt.grid(True)
-plt.title('RMSE: %.4f, N=%d' % (RMSE,len(x_test)))
-plt.savefig('da1.png')
+#plt.title('RMSE: %.4f, N=%d' % (RMSE,len(x_test)))
+plt.title('RMSE: '+'{:.2e}'.format(RMSE)+', N=%d' % (len(x_test)))
+plt.savefig('ma1.png')
 
 
 # In[ ]:
@@ -208,7 +219,7 @@ plt.title("Blue:Predicted, Red:|Error|")
 plt.plot(l, Yp, 'b-', linewidth=1)
 plt.plot(l, abs(delta_y), 'r-', linewidth=1)
 plt.grid(True)
-plt.savefig('da2.png')
+plt.savefig('ma2.png')
 
 
 # In[ ]:
@@ -220,7 +231,7 @@ num_bins = 200
 plt.hist(y_test, num_bins, facecolor='blue')
 plt.xlabel('Y_test histogram')
 plt.grid(True)
-plt.savefig('da3.png')
+plt.savefig('ma3.png')
 
 
 # In[ ]:
